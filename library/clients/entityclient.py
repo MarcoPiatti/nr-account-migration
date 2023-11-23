@@ -2,7 +2,7 @@ import requests
 import json
 import os
 import library.migrationlogger as m_logger
-import collections
+import collections.abc
 import logging
 from library.clients.endpoints import Endpoints
 
@@ -503,7 +503,7 @@ def show_url_for_app(entity_type, app_id, region=Endpoints.REGION_US):
     if APM_APP == entity_type:
         show_url = Endpoints.of(region).SHOW_APM_APP_URL
     if show_url:
-        return show_url + app_id + '.json'
+        return show_url + str(app_id) + '.json'
     logger.error('Only supported for ' + MOBILE_APP + ' and ' + APM_APP)
 
 
@@ -802,7 +802,7 @@ def post_dashboard(per_api_key, dashboard, acct_id, region=DEFAULT_REGION):
             result['error'] = response_json['errors']
         else:
             dashboard_create = response_json['data']['dashboardCreate']
-            if 'errors' in dashboard_create and isinstance(dashboard_create['errors'], collections.Sequence):
+            if 'errors' in dashboard_create and isinstance(dashboard_create['errors'], collections.abc.Sequence):
                 logger.error('Error : ' + response.text)
                 result['error'] = dashboard_create['errors']
             else:
